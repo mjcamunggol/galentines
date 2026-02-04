@@ -3,93 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Gal-entine? 💕</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Pacifico&display=swap" rel="stylesheet">
+    <title>💖 Be My Gal-entine? 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-heart">💕</div>
-        <div class="loading-text">Loading cuteness...</div>
-    </div>
-
-    <!-- Floating hearts background -->
     <div class="floating-hearts" id="floatingHearts"></div>
 
-    <!-- Reset button (owner only) -->
-    <button class="reset-btn" id="resetBtn" onclick="resetAll()">🔄 Reset All</button>
-
     <div class="container">
-        <!-- Page 1: Name Input -->
-        <div class="page active" id="page1">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="screen active">
             <div class="card">
-                <span class="sticker sticker-1">🌸</span>
-                <span class="sticker sticker-2">🌸</span>
-                <span class="sticker sticker-3">🌸</span>
-                <span class="sticker sticker-4">🌸</span>
-                
-                <h1>Will you be my Gal-entine? 💖</h1>
-                <p>Hey bestie! Let's plan the most adorable day together 🥰</p>
-                
-                <div class="input-group">
-                    <input type="text" id="nameInput" placeholder="What's your name? ✨" maxlength="50">
-                </div>
-                
-                <button class="btn btn-primary" onclick="submitName()">Continue 💕</button>
+                <h1>💖 Gal-entines 2026 💖</h1>
+                <p>Hey bestie! 🌸</p>
+                <p>Valentine's Day is coming up, and I want to spend it celebrating our friendship! ✨</p>
+                <p>What's your name?</p>
+                <input type="text" id="nameInput" placeholder="Enter your name here 💕">
+                <button class="btn-primary" onclick="submitName()">Next →</button>
             </div>
         </div>
 
-        <!-- Page 2: Yes/No Question -->
-        <div class="page" id="page2">
+        <!-- The Big Question Screen -->
+        <div id="questionScreen" class="screen">
             <div class="card">
-                <h2>Hi, <span id="userName"></span>! 💕</h2>
-                <p style="font-size: 1.3rem; margin: 30px 0;">Will you be my Gal-entine?</p>
-                
-                <div class="button-group">
-                    <button class="btn btn-primary btn-yes" id="yesBtn" onclick="handleYes()">Yes 💕</button>
-                    <button class="btn btn-secondary" onclick="handleNo()">No 🙃</button>
+                <h1>Hey <span id="userName"></span>! 🌟</h1>
+                <p style="font-size: 1.5em; margin: 30px 0;">Will you be my Gal-entine? 💕</p>
+                <div id="promptText" class="prompt-text"></div>
+                <div>
+                    <button id="yesBtn" class="btn-yes" onclick="sayYes()">Yes! 💖</button>
+                    <button id="noBtn" class="btn-no" onclick="sayNo()">No</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Questionnaire Screen -->
+        <div id="questionnaireScreen" class="screen">
+            <div class="card">
+                <h2>Let's Plan Our Perfect Day! ✨</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div id="questionContainer"></div>
+                <div class="nav-buttons">
+                    <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display: none;">← Back</button>
+                    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="resultsScreen" class="screen">
+            <div class="card">
+                <h1>Your Perfect Gal-entines Date! 🎉</h1>
+                <p>Here's what <span id="userNameResults"></span> loves:</p>
                 
-                <div id="playfulMessage" class="playful-message"></div>
-            </div>
-        </div>
+                <div class="combo-card">
+                    <div class="combo-title">Your Dream Date Combo 💫</div>
+                    <div class="emoji-large" id="comboEmojis"></div>
+                    <div id="comboDescription"></div>
+                </div>
 
-        <!-- Page 3: Questionnaire -->
-        <div class="page" id="page3">
-            <div class="card" style="max-width: 700px; margin: 0 auto;">
-                <h2>Yay! Let's plan our perfect day 🎉</h2>
-                <p>Drag to rank your preferences! (Top = most excited about)</p>
+                <div id="resultsContainer"></div>
 
-                <div id="questionnaire"></div>
-
-                <button class="btn btn-primary" onclick="submitQuestionnaire()" style="width: 100%; margin-top: 20px;">Submit 💕</button>
-            </div>
-        </div>
-
-        <!-- Page 4: Results -->
-        <div class="page" id="page4">
-            <div class="card" style="max-width: 800px; margin: 0 auto;">
-                <h2 id="resultsTitle">Thanks bestie 💕</h2>
-                <p>Here's what everyone's feeling so far!</p>
-
-                <div id="resultsContent"></div>
+                <p style="margin-top: 30px;">Can't wait to celebrate with you! 💖</p>
+                <button class="btn-primary" onclick="resetQuiz()">Start Over 🔄</button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="script.js"></script>
-    <script>
-    const SUPABASE_URL = "https://qldhjqejpqbkfyjhuwrd.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsZGhqcWVqcHFia2Z5amh1d3JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjYzOTQsImV4cCI6MjA4NTcwMjM5NH0.TNFRfoLKwOoG7DtDyF44y2dThK24gmxrJjQ1wWOD1sQ";
 
-    const supabase = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_ANON_KEY
-    );
-    </script>
 </body>
 </html>
