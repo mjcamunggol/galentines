@@ -48,26 +48,30 @@ const { useState, useEffect, useRef } = React;
       const [existingUser, setExistingUser] = useState(null);
       const [allResults, setAllResults] = useState(null);
       
-      // Rankings
-      const [activityRanking, setActivityRanking] = useState([
-        { id: 1, text: 'Café hopping ☕', emoji: '☕' },
-        { id: 2, text: 'Movie night 🎬', emoji: '🎬' },
-        { id: 3, text: 'Picnic 🌸', emoji: '🌸' },
-        { id: 4, text: 'Shopping 🛍️', emoji: '🛍️' },
-        { id: 5, text: 'Spa / self-care 💆‍♀️', emoji: '💆‍♀️' },
-        { id: 6, text: 'Stay-in & yap 💬', emoji: '💬' }
-      ]);
-      
-      const [foodRanking, setFoodRanking] = useState([
+        // Rankings
+        const [activityRanking, setActivityRanking] = useState([
+        { id: 1, text: 'Baking Workshop at Bakebe', emoji: '🍰' },
+        { id: 2, text: 'Movie night', emoji: '🎬' },
+        { id: 3, text: 'Picnic at Ayala Triangles', emoji: '🌸' },
+        { id: 4, text: 'Pottery or Painting Workshop', emoji: '🎨' },
+        { id: 5, text: 'Spa / self-care', emoji: '💆‍♀️' },
+        { id: 6, text: 'Pajama party at a staycation', emoji: '🌙' },
+        { id: 7, text: 'Amusement Park', emoji: '🍭' },
+        { id: 8, text: 'Escape Room', emoji: '👻' }
+        ]);
+
+        const [foodRanking, setFoodRanking] = useState([
         { id: 1, text: 'Korean 🍜', emoji: '🍜' },
         { id: 2, text: 'Japanese 🍣', emoji: '🍣' },
         { id: 3, text: 'Italian 🍝', emoji: '🍝' },
-        { id: 4, text: 'Filipino 🇵🇭', emoji: '🇵🇭' },
+        { id: 4, text: 'Filipino 🍚', emoji: '🍚' },
         { id: 5, text: 'Desserts & coffee 🍰☕', emoji: '🍰' },
-        { id: 6, text: 'Fast food guilty pleasure 🍔', emoji: '🍔' }
-      ]);
+        { id: 6, text: 'Burgers 🍔', emoji: '🍔' }
+        ]);
+
 
       const [vibe, setVibe] = useState('');
+      const [availableDates, setAvailableDates] = useState([]);
 
       useEffect(() => {
         createFloatingHearts();
@@ -158,6 +162,16 @@ const { useState, useEffect, useRef } = React;
         }
       };
 
+      const handleDateToggle = (date) => {
+        setAvailableDates(prev => {
+          if (prev.includes(date)) {
+            return prev.filter(d => d !== date);
+          } else {
+            return [...prev, date].sort((a, b) => a - b);
+          }
+        });
+      };
+
       const fetchResults = async () => {
         try {
           const { data, error: fetchError } = await supabase
@@ -169,6 +183,7 @@ const { useState, useEffect, useRef } = React;
           // Calculate aggregated results
           const activityScores = {};
           const foodScores = {};
+          const dateScores = {};
 
           data.forEach(user => {
             if (user.activity_rankings) {
@@ -183,6 +198,11 @@ const { useState, useEffect, useRef } = React;
                 foodScores[food] = (foodScores[food] || 0) + score;
               });
             }
+            if (user.available_dates) {
+              user.available_dates.forEach(date => {
+                dateScores[date] = (dateScores[date] || 0) + 1;
+              });
+            }
           });
 
           const sortedActivities = Object.entries(activityScores)
@@ -193,9 +213,14 @@ const { useState, useEffect, useRef } = React;
             .sort((a, b) => b[1] - a[1])
             .slice(0, 5);
 
+          const sortedDates = Object.entries(dateScores)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10);
+
           setAllResults({
             activities: sortedActivities,
             foods: sortedFoods,
+            dates: sortedDates,
             totalResponses: data.length
           });
         } catch (err) {
@@ -215,7 +240,8 @@ const { useState, useEffect, useRef } = React;
             accepted: true,
             activity_rankings: activityRanking.map(a => a.text),
             food_rankings: foodRanking.map(f => f.text),
-            vibe: vibe
+            vibe: vibe,
+            available_dates: availableDates
           };
 
           const { error: insertError } = await supabase
@@ -245,7 +271,7 @@ const { useState, useEffect, useRef } = React;
 
             {!loading && stage === 'name' && (
               <>
-                <h1>Hi bestie 💕</h1>
+                <h1>Hi bestie 💐</h1>
                 <p className="subtitle">What's your name?</p>
                 <form onSubmit={handleNameSubmit}>
                   <div className="input-group">
@@ -268,7 +294,7 @@ const { useState, useEffect, useRef } = React;
               <>
                 <h1>Will you be my</h1>
                 <h1 style={{marginTop: '-20px'}}>Gal-entine?</h1>
-                <p className="subtitle">💕🌸</p>
+                <p className="subtitle">💐</p>
                 
                 {rejectCount > 0 && (
                   <div className="reject-message">
@@ -379,7 +405,32 @@ const { useState, useEffect, useRef } = React;
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-primary" disabled={!vibe}>
+                  <div className="question-section">
+                    <div className="question-title">What dates are you available? 📅💖</div>
+                    <p style={{textAlign: 'center', fontSize: '0.9em', marginBottom: '15px', color: 'var(--text)', opacity: 0.8}}>
+                      Select all dates that work for you! Remember: month of February!
+                    </p>
+                    <div className="date-grid">
+                      {Array.from({ length: 28 }, (_, i) => i + 1).map(date => (
+                        <button
+                          key={date}
+                          type="button"
+                          className={`date-btn ${availableDates.includes(date) ? 'selected' : ''}`}
+                          onClick={() => handleDateToggle(date)}
+                        >
+                          {date}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="date-helper-text">
+                      {availableDates.length > 0 
+                        ? `${availableDates.length} date${availableDates.length !== 1 ? 's' : ''} selected 💕`
+                        : 'Tap dates to select them! ✨'
+                      }
+                    </p>
+                  </div>
+
+                  <button type="submit" className="btn btn-primary" disabled={!vibe || availableDates.length === 0}>
                     <span>Submit 💕</span>
                   </button>
                 </form>
@@ -449,6 +500,38 @@ const { useState, useEffect, useRef } = React;
                     })}
                   </div>
 
+                  <div className="result-section">
+                    <h3>Most Popular Dates 📅</h3>
+                    <p style={{fontSize: '0.9em', marginBottom: '20px', opacity: 0.8}}>
+                      When most people are free! 👀✨
+                    </p>
+                    {allResults.dates && allResults.dates.length > 0 ? (
+                      allResults.dates.map(([date, count], index) => {
+                        const maxCount = allResults.dates[0][1];
+                        const percentage = (count / maxCount) * 100;
+                        
+                        return (
+                          <div key={date} className="result-item">
+                            <div className="result-icon">{index + 1 === 1 ? '👑' : '📅'}</div>
+                            <div className="result-info">
+                              <div className="result-name">
+                                February {date} ({count} {count === 1 ? 'person' : 'people'})
+                              </div>
+                              <div className="progress-bar">
+                                <div 
+                                  className="progress-fill" 
+                                  style={{width: `${percentage}%`}}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p style={{textAlign: 'center', opacity: 0.6}}>No dates selected yet!</p>
+                    )}
+                  </div>
+
                   {existingUser && (
                     <div className="result-section">
                       <h3>Your Rankings 💕</h3>
@@ -475,6 +558,16 @@ const { useState, useEffect, useRef } = React;
                           </p>
                           <div style={{fontSize: '1.1em', fontWeight: '600', color: 'var(--dark-pink)'}}>
                             {existingUser.vibe}
+                          </div>
+                        </>
+                      )}
+                      {existingUser.available_dates && existingUser.available_dates.length > 0 && (
+                        <>
+                          <p style={{fontSize: '0.9em', marginTop: '15px', marginBottom: '10px', opacity: 0.8}}>
+                            <strong>Your available dates:</strong>
+                          </p>
+                          <div style={{fontSize: '0.95em', lineHeight: '1.6'}}>
+                            {existingUser.available_dates.sort((a, b) => a - b).map(date => `Feb ${date}`).join(', ')}
                           </div>
                         </>
                       )}
