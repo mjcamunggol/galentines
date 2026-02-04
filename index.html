@@ -1,80 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💖 Be My Gal-entine? 💖</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Pacifico&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Be My Gal-entine? 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="floating-hearts" id="floatingHearts"></div>
+  <div class="hearts-bg" id="hearts-bg"></div>
+  <div id="root"></div>
 
-    <div class="container">
-        <!-- Welcome Screen -->
-        <div id="welcomeScreen" class="screen active">
-            <div class="card">
-                <h1>💖 Gal-entines 2026 💖</h1>
-                <p>Hey bestie! 🌸</p>
-                <p>Valentine's Day is coming up, and I want to spend it celebrating our friendship! ✨</p>
-                <p>What's your name?</p>
-                <input type="text" id="nameInput" placeholder="Enter your name here 💕">
-                <button class="btn-primary" onclick="submitName()">Next →</button>
-            </div>
-        </div>
-
-        <!-- The Big Question Screen -->
-        <div id="questionScreen" class="screen">
-            <div class="card">
-                <h1>Hey <span id="userName"></span>! 🌟</h1>
-                <p style="font-size: 1.5em; margin: 30px 0;">Will you be my Gal-entine? 💕</p>
-                <div id="promptText" class="prompt-text"></div>
-                <div>
-                    <button id="yesBtn" class="btn-yes" onclick="sayYes()">Yes! 💖</button>
-                    <button id="noBtn" class="btn-no" onclick="sayNo()">No</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Questionnaire Screen -->
-        <div id="questionnaireScreen" class="screen">
-            <div class="card">
-                <h2>Let's Plan Our Perfect Day! ✨</h2>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
-                </div>
-                <div id="questionContainer"></div>
-                <div class="nav-buttons">
-                    <button class="btn-secondary" id="prevBtn" onclick="prevQuestion()" style="display: none;">← Back</button>
-                    <button class="btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Results Screen -->
-        <div id="resultsScreen" class="screen">
-            <div class="card">
-                <h1>Your Perfect Gal-entines Date! 🎉</h1>
-                <p>Here's what <span id="userNameResults"></span> loves:</p>
-                
-                <div class="combo-card">
-                    <div class="combo-title">Your Dream Date Combo 💫</div>
-                    <div class="emoji-large" id="comboEmojis"></div>
-                    <div id="comboDescription"></div>
-                </div>
-
-                <div id="resultsContainer"></div>
-
-                <p style="margin-top: 30px;">Can't wait to celebrate with you! 💖</p>
-                <button class="btn-primary" onclick="resetQuiz()">Start Over 🔄</button>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="script.js"></script>
-
+  <script type="text/babel" src="script.js"></script>
 </body>
 </html>
