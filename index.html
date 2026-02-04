@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Gal-entine? 💕</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-heart">💕</div>
+        <div class="loading-text">Loading cuteness...</div>
+    </div>
+
+    <!-- Floating hearts background -->
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- Reset button (owner only) -->
+    <button class="reset-btn" id="resetBtn" onclick="resetAll()">🔄 Reset All</button>
+
+    <div class="container">
+        <!-- Page 1: Name Input -->
+        <div class="page active" id="page1">
+            <div class="card">
+                <span class="sticker sticker-1">🌸</span>
+                <span class="sticker sticker-2">🌸</span>
+                <span class="sticker sticker-3">🌸</span>
+                <span class="sticker sticker-4">🌸</span>
+                
+                <h1>Will you be my Gal-entine? 💖</h1>
+                <p>Hey bestie! Let's plan the most adorable day together 🥰</p>
+                
+                <div class="input-group">
+                    <input type="text" id="nameInput" placeholder="What's your name? ✨" maxlength="50">
+                </div>
+                
+                <button class="btn btn-primary" onclick="submitName()">Continue 💕</button>
+            </div>
+        </div>
+
+        <!-- Page 2: Yes/No Question -->
+        <div class="page" id="page2">
+            <div class="card">
+                <h2>Hi, <span id="userName"></span>! 💕</h2>
+                <p style="font-size: 1.3rem; margin: 30px 0;">Will you be my Gal-entine?</p>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary btn-yes" id="yesBtn" onclick="handleYes()">Yes 💕</button>
+                    <button class="btn btn-secondary" onclick="handleNo()">No 🙃</button>
+                </div>
+                
+                <div id="playfulMessage" class="playful-message"></div>
+            </div>
+        </div>
+
+        <!-- Page 3: Questionnaire -->
+        <div class="page" id="page3">
+            <div class="card" style="max-width: 700px; margin: 0 auto;">
+                <h2>Yay! Let's plan our perfect day 🎉</h2>
+                <p>Drag to rank your preferences! (Top = most excited about)</p>
+
+                <div id="questionnaire"></div>
+
+                <button class="btn btn-primary" onclick="submitQuestionnaire()" style="width: 100%; margin-top: 20px;">Submit 💕</button>
+            </div>
+        </div>
+
+        <!-- Page 4: Results -->
+        <div class="page" id="page4">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <h2 id="resultsTitle">Thanks bestie 💕</h2>
+                <p>Here's what everyone's feeling so far!</p>
+
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+    <script>
+    const SUPABASE_URL = "https://qldhjqejpqbkfyjhuwrd.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsZGhqcWVqcHFia2Z5amh1d3JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxMjYzOTQsImV4cCI6MjA4NTcwMjM5NH0.TNFRfoLKwOoG7DtDyF44y2dThK24gmxrJjQ1wWOD1sQ";
+
+    const supabase = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+    </script>
+</body>
+</html>
